@@ -5,7 +5,11 @@
       "PowerShell(npm create astro@latest . -- --template minimal --no-install --skip-git --git)",
       "Bash(npm install *)",
       "mcp__Claude_Preview__preview_start",
-      "PowerShell(gh auth status 2>&1)"
+      "PowerShell(gh auth status 2>&1)",
+      "Bash(npm run *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }
