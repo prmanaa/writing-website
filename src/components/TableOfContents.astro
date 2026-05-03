@@ -1,0 +1,89 @@
+---
+interface Heading {
+  depth: number;
+  slug:  string;
+  text:  string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+const filtered = headings.filter(h => h.depth <= 3);
+
+if (filtered.length < 2) return;
+---
+
+<nav aria-label="Daftar isi" class="toc not-prose mb-8 p-4 rounded-xl bg-brand-surface-light dark:bg-brand-surface-dark border border-brand-border-light dark:border-brand-border-dark text-sm">
+  <button
+    id="toc-toggle"
+    class="w-full flex items-center justify-between font-medium text-brand-text-light dark:text-brand-text-dark mb-3"
+    aria-expanded="true"
+  >
+    <span class="flex items-center gap-2 font-lora">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="8" y1="6" x2="21" y2="6"/>
+        <line x1="8" y1="12" x2="21" y2="12"/>
+        <line x1="8" y1="18" x2="21" y2="18"/>
+        <line x1="3" y1="6" x2="3.01" y2="6"/>
+        <line x1="3" y1="12" x2="3.01" y2="12"/>
+        <line x1="3" y1="18" x2="3.01" y2="18"/>
+      </svg>
+      Daftar Isi
+    </span>
+    <svg id="toc-chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </button>
+
+  <ol id="toc-list" class="space-y-1">
+    {filtered.map(heading => (
+      <li class:list={[
+        heading.depth === 2 && 'pl-0',
+        heading.depth === 3 && 'pl-4',
+      ]}>
+        <a
+          href={`#${heading.slug}`}
+          class="block py-0.5 text-brand-text-light/70 dark:text-brand-text-dark/70 hover:text-brand-accent-light dark:hover:text-brand-accent-dark transition-colors"
+        >
+          {heading.text}
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script>
+  const btn = document.getElementById('toc-toggle');
+  const list = document.getElementById('toc-list');
+  const chevron = document.getElementById('toc-chevron');
+
+  btn?.addEventListener('click', () => {
+    const isOpen = list?.classList.toggle('hidden') === false;
+    btn.setAttribute('aria-expanded', String(!isOpen));
+    chevron?.classList.toggle('rotate-180', isOpen);
+  });
+
+  // Highlight active heading on scroll
+  const links = document.querySelectorAll('.toc a');
+  const headingEls = [...links].map(link => {
+    const id = (link as HTMLAnchorElement).hash.slice(1);
+    return document.getElementById(id);
+  }).filter(Boolean) as HTMLElement[];
+
+  function onScroll() {
+    let active = headingEls[0];
+    for (const el of headingEls) {
+      if (el.getBoundingClientRect().top <= 80) active = el;
+    }
+    links.forEach(link => {
+      const isActive = (link as HTMLAnchorElement).hash === `#${active?.id}`;
+      link.classList.toggle('text-brand-accent-light', isActive);
+      link.classList.toggle('dark:text-brand-accent-dark', isActive);
+      link.classList.toggle('font-medium', isActive);
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>

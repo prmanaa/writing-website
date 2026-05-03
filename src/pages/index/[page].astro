@@ -1,0 +1,53 @@
+---
+import BaseLayout  from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import Pagination  from '../../components/Pagination.astro';
+import { getCollection } from 'astro:content';
+
+const POSTS_PER_PAGE = 10;
+
+export async function getStaticPaths() {
+  const allPosts = (await getCollection('posts', p => !p.data.draft))
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+  const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
+
+  return Array.from({ length: totalPages - 1 }, (_, i) => ({
+    params: { page: String(i + 2) },
+    props:  { allPosts, totalPages },
+  }));
+}
+
+const { page } = Astro.params;
+const { allPosts, totalPages } = Astro.props;
+
+const currentPage = Number(page);
+const posts = allPosts.slice(
+  (currentPage - 1) * POSTS_PER_PAGE,
+  currentPage * POSTS_PER_PAGE,
+);
+---
+
+<BaseLayout title={`Tulisan — Halaman ${currentPage}`}>
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="font-lora text-2xl font-semibold text-brand-text-light dark:text-brand-text-dark">
+      Tulisan — Halaman {currentPage}
+    </h1>
+    <a href="/" class="text-sm text-brand-accent-light dark:text-brand-accent-dark hover:underline">← Beranda</a>
+  </div>
+
+  <div class="flex flex-col gap-4">
+    {posts.map(post => (
+      <ArticleCard
+        title={post.data.title}
+        description={post.data.description}
+        date={post.data.date}
+        slug={post.slug}
+        tags={post.data.tags}
+        body={post.body}
+      />
+    ))}
+  </div>
+
+  <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl="/index" />
+</BaseLayout>

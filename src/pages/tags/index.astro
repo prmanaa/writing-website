@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { getAllTags } from '../../utils/index';
+
+const posts = await getCollection('posts', p => !p.data.draft);
+const tags  = getAllTags(posts);
+---
+
+<BaseLayout title="Topik" description="Semua topik tulisan di blog Wildan.">
+
+  <header class="mb-10">
+    <h1 class="font-lora text-3xl font-semibold text-brand-text-light dark:text-brand-text-dark mb-2">Topik</h1>
+    <p class="text-brand-text-light/60 dark:text-brand-text-dark/60">
+      {tags.size} topik · {posts.length} tulisan
+    </p>
+  </header>
+
+  {tags.size === 0 ? (
+    <p class="text-brand-text-light/50 dark:text-brand-text-dark/50">Belum ada topik.</p>
+  ) : (
+    <div class="flex flex-wrap gap-3">
+      {[...tags.entries()].map(([tag, count]) => (
+        <a
+          href={`/tags/${tag}`}
+          class="card flex items-center gap-2 px-4 py-2 hover:no-underline group"
+        >
+          <span class="font-medium text-brand-text-light dark:text-brand-text-dark group-hover:text-brand-accent-light dark:group-hover:text-brand-accent-dark transition-colors">
+            {tag}
+          </span>
+          <span class="text-sm text-brand-text-light/40 dark:text-brand-text-dark/40 tabular-nums">
+            {count}
+          </span>
+        </a>
+      ))}
+    </div>
+  )}
+
+</BaseLayout>

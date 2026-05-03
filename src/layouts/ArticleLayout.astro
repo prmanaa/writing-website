@@ -1,0 +1,148 @@
+---
+import BaseHead          from '../components/BaseHead.astro';
+import Header            from '../components/Header.astro';
+import Footer            from '../components/Footer.astro';
+import TagBadge          from '../components/TagBadge.astro';
+import TableOfContents   from '../components/TableOfContents.astro';
+import Comments          from '../components/Comments.astro';
+import '../styles/global.css';
+import { formatDate, readingTime } from '../utils/index';
+
+interface Heading {
+  depth: number;
+  slug:  string;
+  text:  string;
+}
+
+interface Props {
+  title:       string;
+  description: string;
+  date:        Date;
+  tags:        string[];
+  body:        string;
+  slug:        string;
+  headings:    Heading[];
+  prevPost?:   { title: string; slug: string } | null;
+  nextPost?:   { title: string; slug: string } | null;
+}
+
+const {
+  title, description, date, tags, body, slug, headings,
+  prevPost, nextPost,
+} = Astro.props;
+
+const fd  = formatDate(date);
+const rt  = readingTime(body);
+const url = Astro.url.toString();
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body>
+    <Header />
+
+    <main class="max-w-article mx-auto px-5 sm:px-0 py-10 sm:py-16">
+
+      <!-- Article header -->
+      <header class="mb-10">
+        <div class="flex flex-wrap gap-1.5 mb-4 not-prose">
+          {tags.map(tag => <TagBadge tag={tag} />)}
+        </div>
+
+        <h1 class="font-lora text-3xl sm:text-4xl font-semibold text-brand-text-light dark:text-brand-text-dark leading-tight mb-4">
+          {title}
+        </h1>
+
+        <p class="text-lg text-brand-text-light/70 dark:text-brand-text-dark/70 leading-relaxed mb-6">
+          {description}
+        </p>
+
+        <div class="flex items-center gap-3 text-sm text-brand-text-light/50 dark:text-brand-text-dark/50 not-prose">
+          <span>Wildan</span>
+          <span aria-hidden>·</span>
+          <time datetime={date.toISOString()}>{fd}</time>
+          <span aria-hidden>·</span>
+          <span>{rt}</span>
+        </div>
+      </header>
+
+      <!-- Table of contents -->
+      {headings.length >= 2 && <TableOfContents headings={headings} />}
+
+      <!-- Article body -->
+      <article
+        class="prose dark:prose-invert max-w-none"
+        data-pagefind-body
+        data-pagefind-meta={`title:${title}, description:${description}`}
+      >
+        <slot />
+      </article>
+
+      <!-- Share -->
+      <div class="mt-10 pt-6 border-t border-brand-border-light dark:border-brand-border-dark not-prose flex items-center gap-3">
+        <span class="text-sm text-brand-text-light/50 dark:text-brand-text-dark/50">Bagikan:</span>
+        <button
+          id="copy-link"
+          class="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border border-brand-border-light dark:border-brand-border-dark text-brand-text-light/70 dark:text-brand-text-dark/70 hover:text-brand-accent-light dark:hover:text-brand-accent-dark hover:border-brand-accent-light dark:hover:border-brand-accent-dark transition-colors"
+          data-url={url}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          <span id="copy-label">Salin tautan</span>
+        </button>
+      </div>
+
+      <!-- Prev / Next navigation -->
+      {(prevPost || nextPost) && (
+        <nav class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 not-prose" aria-label="Navigasi artikel">
+          {prevPost ? (
+            <a href={`/posts/${prevPost.slug}`} class="card flex flex-col gap-1 group">
+              <span class="text-xs text-brand-text-light/50 dark:text-brand-text-dark/50">← Sebelumnya</span>
+              <span class="text-sm font-medium text-brand-text-light dark:text-brand-text-dark group-hover:text-brand-accent-light dark:group-hover:text-brand-accent-dark transition-colors line-clamp-2">
+                {prevPost.title}
+              </span>
+            </a>
+          ) : <div />}
+
+          {nextPost ? (
+            <a href={`/posts/${nextPost.slug}`} class="card flex flex-col gap-1 items-end text-right group">
+              <span class="text-xs text-brand-text-light/50 dark:text-brand-text-dark/50">Berikutnya →</span>
+              <span class="text-sm font-medium text-brand-text-light dark:text-brand-text-dark group-hover:text-brand-accent-light dark:group-hover:text-brand-accent-dark transition-colors line-clamp-2">
+                {nextPost.title}
+              </span>
+            </a>
+          ) : <div />}
+        </nav>
+      )}
+
+      <!-- Comments -->
+      <Comments pageId={slug} pageTitle={title} pageUrl={url} />
+
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<script>
+  const btn = document.getElementById('copy-link');
+  const label = document.getElementById('copy-label');
+
+  btn?.addEventListener('click', async () => {
+    const url = btn.getAttribute('data-url') ?? window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      if (label) {
+        label.textContent = 'Tersalin!';
+        setTimeout(() => { label.textContent = 'Salin tautan'; }, 2000);
+      }
+    } catch {
+      // fallback: select text
+    }
+  });
+</script>

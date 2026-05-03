@@ -1,0 +1,52 @@
+---
+import BaseLayout   from '../../layouts/BaseLayout.astro';
+import ArticleCard  from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+import { getAllTags } from '../../utils/index';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', p => !p.data.draft);
+  const tags  = getAllTags(posts);
+
+  return [...tags.keys()].map(tag => ({
+    params: { tag },
+    props:  {
+      posts: posts
+        .filter(p => p.data.tags.includes(tag))
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout title={`#${tag}`} description={`Semua tulisan dengan topik ${tag}.`}>
+
+  <header class="mb-10">
+    <a href="/tags" class="text-sm text-brand-text-light/50 dark:text-brand-text-dark/50 hover:text-brand-accent-light dark:hover:text-brand-accent-dark transition-colors mb-3 inline-block">
+      ← Semua topik
+    </a>
+    <h1 class="font-lora text-3xl font-semibold text-brand-text-light dark:text-brand-text-dark mb-2">
+      #{tag}
+    </h1>
+    <p class="text-brand-text-light/60 dark:text-brand-text-dark/60">
+      {posts.length} tulisan
+    </p>
+  </header>
+
+  <div class="flex flex-col gap-4">
+    {posts.map(post => (
+      <ArticleCard
+        title={post.data.title}
+        description={post.data.description}
+        date={post.data.date}
+        slug={post.slug}
+        tags={post.data.tags}
+        body={post.body}
+      />
+    ))}
+  </div>
+
+</BaseLayout>

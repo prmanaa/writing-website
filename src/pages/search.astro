@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Cari Artikel" description="Cari tulisan di blog Wildan.">
+
+  <header class="mb-10">
+    <h1 class="font-lora text-3xl font-semibold text-brand-text-light dark:text-brand-text-dark mb-2">
+      Cari Artikel
+    </h1>
+    <p class="text-brand-text-light/60 dark:text-brand-text-dark/60">
+      Temukan tulisan berdasarkan kata kunci.
+    </p>
+  </header>
+
+  <!-- Pagefind renders here after build -->
+  <div id="search" class="max-w-2xl"></div>
+
+  <!-- Shown during development when Pagefind index doesn't exist -->
+  <div id="search-fallback" class="hidden max-w-2xl card text-sm text-brand-text-light/60 dark:text-brand-text-dark/60">
+    <p>Pencarian baru tersedia setelah <code class="bg-brand-surface-light dark:bg-brand-surface-dark px-1.5 py-0.5 rounded text-xs">npm run build</code>. Jalankan <code class="bg-brand-surface-light dark:bg-brand-surface-dark px-1.5 py-0.5 rounded text-xs">npm run preview</code> untuk mencoba.</p>
+  </div>
+
+</BaseLayout>
+
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+
+<script>
+  async function initSearch() {
+    try {
+      // @ts-ignore — generated at build time
+      const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+      new PagefindUI({
+        element: '#search',
+        showSubResults: true,
+        showImages: false,
+        translations: {
+          placeholder:  'Cari tulisan…',
+          zero_results: 'Tidak ada hasil untuk "[QUERY]"',
+        },
+      });
+    } catch {
+      document.getElementById('search')?.classList.add('hidden');
+      document.getElementById('search-fallback')?.classList.remove('hidden');
+    }
+  }
+
+  initSearch();
+</script>

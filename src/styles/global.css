@@ -1,0 +1,104 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-brand-bg-light text-brand-text-light font-inter;
+    scroll-behavior: smooth;
+  }
+
+  html.dark {
+    @apply bg-brand-bg-dark text-brand-text-dark;
+  }
+
+  body {
+    @apply antialiased min-h-screen;
+  }
+
+  ::selection {
+    @apply bg-brand-accent-light/30;
+  }
+
+  .dark ::selection {
+    @apply bg-brand-accent-dark/30;
+  }
+}
+
+@layer components {
+  .nav-link {
+    @apply text-sm font-inter text-brand-text-light/70 dark:text-brand-text-dark/70
+           hover:text-brand-accent-light dark:hover:text-brand-accent-dark
+           transition-colors duration-200;
+  }
+
+  .tag-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+           bg-brand-surface-light dark:bg-brand-surface-dark
+           text-brand-accent-light dark:text-brand-accent-dark
+           border border-brand-border-light dark:border-brand-border-dark
+           hover:border-brand-accent-light dark:hover:border-brand-accent-dark
+           transition-colors duration-200 no-underline;
+  }
+
+  .btn-icon {
+    @apply p-2 rounded-lg
+           text-brand-text-light/60 dark:text-brand-text-dark/60
+           hover:text-brand-text-light dark:hover:text-brand-text-dark
+           hover:bg-brand-surface-light dark:hover:bg-brand-surface-dark
+           transition-colors duration-200;
+  }
+
+  .card {
+    @apply bg-brand-bg-light dark:bg-brand-bg-dark
+           border border-brand-border-light dark:border-brand-border-dark
+           rounded-xl p-6
+           hover:border-brand-accent-light/50 dark:hover:border-brand-accent-dark/50
+           transition-all duration-200;
+  }
+
+  .divider {
+    @apply border-brand-border-light dark:border-brand-border-dark;
+  }
+}
+
+/* Shiki code blocks */
+pre {
+  @apply rounded-xl p-5 overflow-x-auto text-sm leading-relaxed;
+  background-color: #1e1e2e !important;
+}
+
+pre code {
+  @apply bg-transparent p-0 text-sm;
+}
+
+/* Smooth scroll for anchor links */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+/* Focus visible */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-brand-accent-light dark:outline-brand-accent-dark;
+}
+
+/* Pagefind search UI overrides */
+.pagefind-ui {
+  --pagefind-ui-scale: 1;
+  --pagefind-ui-primary: #A67B5B;
+  --pagefind-ui-text: #2C1F14;
+  --pagefind-ui-background: #FAF6F1;
+  --pagefind-ui-border: #E0D4C4;
+  --pagefind-ui-tag: #F0E6D8;
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 8px;
+  --pagefind-ui-font: 'Inter', sans-serif;
+}
+
+.dark .pagefind-ui {
+  --pagefind-ui-primary: #C49A78;
+  --pagefind-ui-text: #EDE0D0;
+  --pagefind-ui-background: #1C1410;
+  --pagefind-ui-border: #3A2C22;
+  --pagefind-ui-tag: #261C14;
+}

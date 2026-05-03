@@ -1,0 +1,41 @@
+---
+interface Props {
+  currentPage: number;
+  totalPages:  number;
+  baseUrl:     string;
+}
+
+const { currentPage, totalPages, baseUrl } = Astro.props;
+const prevUrl = currentPage > 1 ? `${baseUrl}${currentPage - 1 === 1 ? '' : `/${currentPage - 1}`}` : null;
+const nextUrl = currentPage < totalPages ? `${baseUrl}/${currentPage + 1}` : null;
+---
+
+{totalPages > 1 && (
+  <nav aria-label="Navigasi halaman" class="flex items-center justify-center gap-3 mt-12 not-prose">
+    {prevUrl ? (
+      <a
+        href={prevUrl}
+        class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium border border-brand-border-light dark:border-brand-border-dark text-brand-text-light dark:text-brand-text-dark hover:border-brand-accent-light dark:hover:border-brand-accent-dark hover:text-brand-accent-light dark:hover:text-brand-accent-dark transition-colors"
+      >
+        ← Sebelumnya
+      </a>
+    ) : (
+      <span class="px-4 py-2 text-sm text-brand-text-light/30 dark:text-brand-text-dark/30">← Sebelumnya</span>
+    )}
+
+    <span class="text-sm text-brand-text-light/50 dark:text-brand-text-dark/50">
+      {currentPage} / {totalPages}
+    </span>
+
+    {nextUrl ? (
+      <a
+        href={nextUrl}
+        class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium border border-brand-border-light dark:border-brand-border-dark text-brand-text-light dark:text-brand-text-dark hover:border-brand-accent-light dark:hover:border-brand-accent-dark hover:text-brand-accent-light dark:hover:text-brand-accent-dark transition-colors"
+      >
+        Berikutnya →
+      </a>
+    ) : (
+      <span class="px-4 py-2 text-sm text-brand-text-light/30 dark:text-brand-text-dark/30">Berikutnya →</span>
+    )}
+  </nav>
+)}

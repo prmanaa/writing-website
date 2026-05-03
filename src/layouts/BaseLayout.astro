@@ -1,0 +1,32 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header   from '../components/Header.astro';
+import Footer   from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title:        string;
+  description?: string;
+  image?:       string;
+}
+
+const {
+  title,
+  description = 'Blog pribadi Wildan — tulisan tentang teknologi, produktivitas, dan kehidupan.',
+  image,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <BaseHead title={title} description={description} image={image} />
+  </head>
+  <body>
+    <Header />
+    <main class="max-w-5xl mx-auto px-5 sm:px-8 py-10 sm:py-16">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
