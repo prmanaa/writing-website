@@ -10,14 +10,27 @@ interface Props {
   tags:        string[];
   body:        string;
   featured?:   boolean;
+  cover?:      string;
 }
 
-const { title, description, date, slug, tags, body, featured } = Astro.props;
+const { title, description, date, slug, tags, body, featured, cover } = Astro.props;
 const rt = readingTime(body);
 const fd = formatDate(date);
 ---
 
-<article class:list={['card group', featured && 'border-brand-accent-light/40 dark:border-brand-accent-dark/40']}>
+<article class:list={['card group overflow-hidden !p-0', featured && 'border-brand-accent-light/40 dark:border-brand-accent-dark/40']}>
+  {cover && (
+    <a href={`/posts/${slug}`} class="block overflow-hidden" tabindex="-1" aria-hidden="true">
+      <img
+        src={cover}
+        alt=""
+        class="w-full object-cover aspect-[2/1] transition-transform duration-300 group-hover:scale-105"
+        loading="lazy"
+      />
+    </a>
+  )}
+
+  <div class="p-6">
   {featured && (
     <span class="inline-block mb-3 text-xs font-medium text-brand-accent-light dark:text-brand-accent-dark uppercase tracking-widest">
       ★ Unggulan
@@ -43,5 +56,6 @@ const fd = formatDate(date);
       <span aria-hidden>·</span>
       <span>{rt}</span>
     </div>
+  </div>
   </div>
 </article>

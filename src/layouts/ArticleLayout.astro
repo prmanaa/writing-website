@@ -5,8 +5,9 @@ import Footer            from '../components/Footer.astro';
 import TagBadge          from '../components/TagBadge.astro';
 import TableOfContents   from '../components/TableOfContents.astro';
 import Comments          from '../components/Comments.astro';
+import RelatedPosts      from '../components/RelatedPosts.astro';
 import '../styles/global.css';
-import { formatDate, readingTime } from '../utils/index';
+import { formatDate, readingTime, wordCount } from '../utils/index';
 
 interface Heading {
   depth: number;
@@ -14,34 +15,49 @@ interface Heading {
   text:  string;
 }
 
-interface Props {
+interface RelatedPost {
+  slug:        string;
   title:       string;
   description: string;
   date:        Date;
   tags:        string[];
   body:        string;
-  slug:        string;
-  headings:    Heading[];
-  prevPost?:   { title: string; slug: string } | null;
-  nextPost?:   { title: string; slug: string } | null;
+}
+
+interface Props {
+  title:        string;
+  description:  string;
+  date:         Date;
+  tags:         string[];
+  body:         string;
+  slug:         string;
+  headings:     Heading[];
+  cover?:       string;
+  prevPost?:    { title: string; slug: string } | null;
+  nextPost?:    { title: string; slug: string } | null;
+  relatedPosts?: RelatedPost[];
 }
 
 const {
   title, description, date, tags, body, slug, headings,
-  prevPost, nextPost,
+  cover, prevPost, nextPost, relatedPosts = [],
 } = Astro.props;
 
 const fd  = formatDate(date);
 const rt  = readingTime(body);
+const wc  = wordCount(body);
 const url = Astro.url.toString();
 ---
 
 <!doctype html>
 <html lang="id">
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={title} description={description} image={cover} />
   </head>
   <body>
+    <!-- Reading progress bar -->
+    <div id="reading-progress" aria-hidden="true"></div>
+
     <Header />
 
     <main class="max-w-article mx-auto px-5 sm:px-0 py-10 sm:py-16">
@@ -66,8 +82,22 @@ const url = Astro.url.toString();
           <time datetime={date.toISOString()}>{fd}</time>
           <span aria-hidden>·</span>
           <span>{rt}</span>
+          <span aria-hidden>·</span>
+          <span>{wc}</span>
         </div>
       </header>
+
+      <!-- Cover image -->
+      {cover && (
+        <div class="mb-10 not-prose">
+          <img
+            src={cover}
+            alt={`Cover untuk artikel: ${title}`}
+            class="w-full rounded-xl object-cover aspect-[2/1] border border-brand-border-light dark:border-brand-border-dark"
+            loading="eager"
+          />
+        </div>
+      )}
 
       <!-- Table of contents -->
       {headings.length >= 2 && <TableOfContents headings={headings} />}
@@ -120,6 +150,9 @@ const url = Astro.url.toString();
         </nav>
       )}
 
+      <!-- Related posts -->
+      <RelatedPosts posts={relatedPosts} />
+
       <!-- Comments -->
       <Comments pageId={slug} pageTitle={title} pageUrl={url} />
 
@@ -128,6 +161,25 @@ const url = Astro.url.toString();
     <Footer />
   </body>
 </html>
+
+<script>
+  // Reading progress bar
+  const progressBar = document.getElementById('reading-progress');
+  const article = document.querySelector('article');
+
+  function updateProgress() {
+    if (!progressBar || !article) return;
+    const articleTop    = article.getBoundingClientRect().top + window.scrollY;
+    const articleBottom = articleTop + article.offsetHeight;
+    const windowBottom  = window.scrollY + window.innerHeight;
+    const total         = articleBottom - articleTop - window.innerHeight;
+    const progress      = Math.min(Math.max((window.scrollY - articleTop + window.innerHeight * 0.1) / (total + window.innerHeight * 0.1) * 100, 0), 100);
+    progressBar.style.setProperty('--progress', `${progress}%`);
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+</script>
 
 <script>
   const btn = document.getElementById('copy-link');

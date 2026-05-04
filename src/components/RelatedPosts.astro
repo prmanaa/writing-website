@@ -1,0 +1,67 @@
+---
+import TagBadge from './TagBadge.astro';
+import { formatDate, readingTime } from '../utils/index';
+
+interface Post {
+  slug:        string;
+  title:       string;
+  description: string;
+  date:        Date;
+  tags:        string[];
+  body:        string;
+  cover?:      string;
+}
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+{posts.length > 0 && (
+  <aside class="mt-12 pt-8 border-t border-brand-border-light dark:border-brand-border-dark not-prose">
+    <h2 class="font-lora text-xl font-semibold text-brand-text-light dark:text-brand-text-dark mb-6">
+      Tulisan Terkait
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {posts.map(post => (
+        <a
+          href={`/posts/${post.slug}`}
+          class="group flex flex-col rounded-xl border border-brand-border-light dark:border-brand-border-dark hover:border-brand-accent-light/50 dark:hover:border-brand-accent-dark/50 transition-all duration-200 overflow-hidden"
+        >
+          {post.cover && (
+            <div class="overflow-hidden">
+              <img
+                src={post.cover}
+                alt=""
+                class="w-full object-cover aspect-[2/1] transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
+            </div>
+          )}
+          <div class="flex flex-col gap-2 p-4 flex-1">
+          <h3 class="font-lora text-base font-semibold text-brand-text-light dark:text-brand-text-dark group-hover:text-brand-accent-light dark:group-hover:text-brand-accent-dark transition-colors leading-snug line-clamp-2">
+            {post.title}
+          </h3>
+
+          <p class="text-xs text-brand-text-light/60 dark:text-brand-text-dark/60 leading-relaxed line-clamp-2 flex-1">
+            {post.description}
+          </p>
+
+          <div class="flex flex-wrap gap-1 mt-1">
+            {post.tags.slice(0, 2).map(tag => <TagBadge tag={tag} />)}
+          </div>
+
+          <div class="flex items-center gap-2 text-xs text-brand-text-light/40 dark:text-brand-text-dark/40 mt-auto pt-1">
+            <time datetime={post.date.toISOString()}>{formatDate(post.date)}</time>
+            <span aria-hidden>·</span>
+            <span>{readingTime(post.body)}</span>
+          </div>
+          </div>
+        </a>
+      ))}
+    </div>
+  </aside>
+)}

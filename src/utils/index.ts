@@ -4,6 +4,11 @@ export function readingTime(content: string): string {
   return `${minutes} menit baca`;
 }
 
+export function wordCount(content: string): string {
+  const count = content.trim().split(/\s+/).filter(Boolean).length;
+  return count.toLocaleString('id-ID') + ' kata';
+}
+
 export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('id-ID', {
     year:  'numeric',

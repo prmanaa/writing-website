@@ -82,6 +82,31 @@ pre code {
   @apply outline-2 outline-offset-2 outline-brand-accent-light dark:outline-brand-accent-dark;
 }
 
+/* Reading progress bar */
+#reading-progress {
+  --progress: 0%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  width: var(--progress);
+  height: 3px;
+  background-color: #A67B5B; /* brand-accent-light */
+  transition: width 0.1s linear;
+  pointer-events: none;
+  border-radius: 0 2px 2px 0;
+}
+
+.dark #reading-progress {
+  background-color: #C49A78; /* brand-accent-dark */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #reading-progress {
+    transition: none;
+  }
+}
+
 /* Pagefind search UI overrides */
 .pagefind-ui {
   --pagefind-ui-scale: 1;

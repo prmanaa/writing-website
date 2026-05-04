@@ -6,17 +6,40 @@ export async function getStaticPaths() {
   const posts = (await getCollection('posts', p => !p.data.draft))
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-  return posts.map((post, index) => ({
-    params: { slug: post.slug },
-    props: {
-      post,
-      prevPost: posts[index + 1] ? { title: posts[index + 1].data.title, slug: posts[index + 1].slug } : null,
-      nextPost: posts[index - 1] ? { title: posts[index - 1].data.title, slug: posts[index - 1].slug } : null,
-    },
-  }));
+  return posts.map((post, index) => {
+    // Hitung skor kesamaan tag untuk setiap post lain
+    const relatedPosts = posts
+      .filter(p => p.slug !== post.slug)
+      .map(p => ({
+        p,
+        score: p.data.tags.filter(tag => post.data.tags.includes(tag)).length,
+      }))
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score || b.p.data.date.valueOf() - a.p.data.date.valueOf())
+      .slice(0, 3)
+      .map(({ p }) => ({
+        slug:        p.slug,
+        title:       p.data.title,
+        description: p.data.description,
+        date:        p.data.date,
+        tags:        p.data.tags,
+        body:        p.body,
+        cover:       p.data.cover,
+      }));
+
+    return {
+      params: { slug: post.slug },
+      props: {
+        post,
+        prevPost:     posts[index + 1] ? { title: posts[index + 1].data.title, slug: posts[index + 1].slug } : null,
+        nextPost:     posts[index - 1] ? { title: posts[index - 1].data.title, slug: posts[index - 1].slug } : null,
+        relatedPosts,
+      },
+    };
+  });
 }
 
-const { post, prevPost, nextPost } = Astro.props;
+const { post, prevPost, nextPost, relatedPosts } = Astro.props;
 const { Content, headings } = await post.render();
 ---
 
@@ -28,8 +51,10 @@ const { Content, headings } = await post.render();
   body={post.body}
   slug={post.slug}
   headings={headings}
+  cover={post.data.cover}
   prevPost={prevPost}
   nextPost={nextPost}
+  relatedPosts={relatedPosts}
 >
   <Content />
 </ArticleLayout>
