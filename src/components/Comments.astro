@@ -4,11 +4,6 @@ interface Props {
   pageTitle: string;
   pageUrl:   string;
 }
-
-const { pageId, pageTitle, pageUrl } = Astro.props;
-
-const CUSDIS_APP_ID = 'a409f522-0540-43f5-aea2-6437a1cde4e4';
-const CUSDIS_HOST  = 'https://cusdis.com';
 ---
 
 <section class="mt-16 pt-8 border-t border-brand-border-light dark:border-brand-border-dark not-prose">
@@ -16,24 +11,19 @@ const CUSDIS_HOST  = 'https://cusdis.com';
     Komentar
   </h2>
 
-  {CUSDIS_APP_ID === 'ISI_APP_ID_CUSDIS_KAMU' ? (
-    <div class="p-4 rounded-xl bg-brand-surface-light dark:bg-brand-surface-dark border border-brand-border-light dark:border-brand-border-dark text-sm text-brand-text-light/70 dark:text-brand-text-dark/70">
-      <p>
-        Untuk mengaktifkan komentar, daftarkan akun di{' '}
-        <a href="https://cusdis.com" target="_blank" rel="noopener" class="text-brand-accent-light dark:text-brand-accent-dark hover:underline">cusdis.com</a>
-        {' '}lalu isi <code class="text-xs bg-brand-bg-light dark:bg-brand-bg-dark px-1.5 py-0.5 rounded">CUSDIS_APP_ID</code> di file{' '}
-        <code class="text-xs bg-brand-bg-light dark:bg-brand-bg-dark px-1.5 py-0.5 rounded">src/components/Comments.astro</code>.
-      </p>
-    </div>
-  ) : (
-    <div
-      id="cusdis_thread"
-      data-host={CUSDIS_HOST}
-      data-app-id={CUSDIS_APP_ID}
-      data-page-id={pageId}
-      data-page-title={pageTitle}
-      data-page-url={pageUrl}
-    />
-    <script async defer src={`${CUSDIS_HOST}/js/cusdis.es.js`} />
-  )}
+  <script src="https://giscus.app/client.js"
+    data-repo="prmanaa/writing-website"
+    data-repo-id="R_kgDOSS2scw"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOSS2sc84C8UKM"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="catppuccin_mocha"
+    data-lang="id"
+    crossorigin="anonymous"
+    async>
+  </script>
 </section>
