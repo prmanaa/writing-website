@@ -35,6 +35,8 @@ Meneruskan dari jawaban ini, absurdisme menghadirkan 3 solusi:
 3. Gairah (Passion)
    Manusia bisa lebih bersemangat dalam menjalani hidup, mencari pengalaman, berhubungan dengan orang lain, menikmati kopi, bercinta, atau menikmati film semata karena kita tahu itu terbatas. Bahwa sebenarnya pada akhirnya manusia akan mati, jadi nikmati setiap detiknya.
 
-Sedikit tentang absurdisme. Jangan lupa untuk menikmati setiap momen karena kita bebas memilih makna kita sendiri.
+Sedikit tentang absurdisme
+
+> Jangan lupa untuk menikmati setiap momen karena kita bebas memilih makna kita sendiri.
 
 
