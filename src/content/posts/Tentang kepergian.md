@@ -9,7 +9,7 @@ tags:
 featured: true
 cover: https://images.pexels.com/photos/16721650/pexels-photo-16721650.jpeg
 ---
-Semua hal yang tercipta di dunia ini bersifat sementara. Tidak ada hal yang secara absolut mendeklarasikan dirinya abadi. Kerajaan-kerajaan, sistem, maupun kepercayaan terbukti tidak lepas dari hukum ini. Raja paling berkuasa sekaligus pada akhirnya akan mencapai kematian dan kerajaan yang ditinggalkannya suatu waktu di masa depan akan lenyap. Hal ini menunjukkan memang ada suatu hukum yang mengatur bahwa semua hal yang exist pasti akan vanished suatu saat.
+Semua hal yang tercipta di dunia ini bersifat sementara. Tidak ada hal yang secara absolut bisa mendeklarasikan dirinya abadi. Kerajaan-kerajaan, sistem, maupun kepercayaan terbukti tidak lepas dari hukum ini. Raja paling berkuasa sekaligus pada akhirnya akan mencapai kematian dan kerajaan yang ditinggalkannya suatu waktu di masa depan akan lenyap. Hal ini menunjukkan memang ada suatu hukum yang mengatur bahwa semua hal yang exist pasti akan vanished suatu saat.
 
 Begitu juga dengan hubungan sesama manusia. Manusia dilempar ke dalam suatu situasi yang sama dengan orang lain. Situasi ini membuat mereka saling terhubung, saling mengerti, dan berbagi perasaan. Namun, situasi ini hanya sementara. Suatu saat dan pasti, situasi ini akan berakhir baik itu karena kematian, perpisahan, atau hal lainnya. 
 

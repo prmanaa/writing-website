@@ -5,7 +5,6 @@ import Header            from '../components/Header.astro';
 import Footer            from '../components/Footer.astro';
 import TagBadge          from '../components/TagBadge.astro';
 import TableOfContents   from '../components/TableOfContents.astro';
-import Comments          from '../components/Comments.astro';
 import RelatedPosts      from '../components/RelatedPosts.astro';
 import '../styles/global.css';
 import { formatDate, readingTime, wordCount } from '../utils/index';
@@ -181,9 +180,6 @@ if (cover && !cover.startsWith('http')) {
 
       <!-- Related posts -->
       <RelatedPosts posts={relatedPosts} />
-
-      <!-- Comments -->
-      <Comments pageId={slug} pageTitle={title} pageUrl={url} />
 
     </main>
 
