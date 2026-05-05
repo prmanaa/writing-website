@@ -23,8 +23,11 @@ const {
     <BaseHead title={title} description={description} image={image} />
   </head>
   <body>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-lg focus:bg-brand-accent-light focus:text-white focus:text-sm focus:font-medium dark:focus:bg-brand-accent-dark">
+      Lewati ke konten utama
+    </a>
     <Header />
-    <main class="max-w-5xl mx-auto px-5 sm:px-8 py-10 sm:py-16">
+    <main id="main-content" class="max-w-5xl mx-auto px-5 sm:px-8 py-10 sm:py-16">
       <slot />
     </main>
     <Footer />
