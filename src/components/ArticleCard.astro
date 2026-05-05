@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import TagBadge from './TagBadge.astro';
 import { formatDate, readingTime } from '../utils/index';
 
@@ -16,17 +17,44 @@ interface Props {
 const { title, description, date, slug, tags, body, featured, cover } = Astro.props;
 const rt = readingTime(body);
 const fd = formatDate(date);
+
+// Dynamic import untuk cover image dari src/assets/images/covers
+let coverImage: any = null;
+if (cover && !cover.startsWith('http')) {
+  try {
+    const coverModules = import.meta.glob<{ default: ImageMetadata }>(
+      '../assets/images/covers/*.{png,jpg,jpeg,gif,webp}',
+      { eager: true }
+    );
+    for (const [path, module] of Object.entries(coverModules)) {
+      if (path.endsWith(cover)) {
+        coverImage = module.default;
+        break;
+      }
+    }
+  } catch (e) {
+    // Fallback if image not found
+  }
+}
 ---
 
 <article class:list={['card group overflow-hidden !p-0', featured && 'border-brand-accent-light/40 dark:border-brand-accent-dark/40']}>
   {cover && (
     <a href={`/posts/${slug}`} class="block overflow-hidden" tabindex="-1" aria-hidden="true">
-      <img
-        src={cover}
-        alt=""
-        class="w-full object-cover aspect-[2/1] transition-transform duration-300 group-hover:scale-105"
-        loading="lazy"
-      />
+      {coverImage ? (
+        <Image
+          src={coverImage}
+          alt=""
+          class="w-full object-cover aspect-[2/1] transition-transform duration-300 group-hover:scale-105"
+        />
+      ) : (
+        <img
+          src={cover}
+          alt=""
+          class="w-full object-cover aspect-[2/1] transition-transform duration-300 group-hover:scale-105"
+          loading="lazy"
+        />
+      )}
     </a>
   )}
 

@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import BaseHead          from '../components/BaseHead.astro';
 import Header            from '../components/Header.astro';
 import Footer            from '../components/Footer.astro';
@@ -47,6 +48,26 @@ const fd  = formatDate(date);
 const rt  = readingTime(body);
 const wc  = wordCount(body);
 const url = Astro.url.toString();
+
+// Dynamic import untuk cover image dari src/assets/images/covers
+let coverImage: any = null;
+if (cover && !cover.startsWith('http')) {
+  try {
+    const coverModules = import.meta.glob<{ default: ImageMetadata }>(
+      '../assets/images/covers/*.{png,jpg,jpeg,gif,webp}',
+      { eager: true }
+    );
+    const coverPath = `../assets/images/covers/${cover}`;
+    for (const [path, module] of Object.entries(coverModules)) {
+      if (path.endsWith(cover)) {
+        coverImage = module.default;
+        break;
+      }
+    }
+  } catch (e) {
+    // Fallback if image not found
+  }
+}
 ---
 
 <!doctype html>
@@ -90,12 +111,20 @@ const url = Astro.url.toString();
       <!-- Cover image -->
       {cover && (
         <div class="mb-10 not-prose">
-          <img
-            src={cover}
-            alt={`Cover untuk artikel: ${title}`}
-            class="w-full rounded-xl object-cover aspect-[2/1] border border-brand-border-light dark:border-brand-border-dark"
-            loading="eager"
-          />
+          {coverImage ? (
+            <Image
+              src={coverImage}
+              alt={`Cover untuk artikel: ${title}`}
+              class="w-full rounded-xl object-cover aspect-[2/1] border border-brand-border-light dark:border-brand-border-dark"
+            />
+          ) : (
+            <img
+              src={cover}
+              alt={`Cover untuk artikel: ${title}`}
+              class="w-full rounded-xl object-cover aspect-[2/1] border border-brand-border-light dark:border-brand-border-dark"
+              loading="eager"
+            />
+          )}
         </div>
       )}
 

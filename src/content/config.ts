@@ -1,4 +1,5 @@
 import { defineCollection, z } from 'astro:content';
+import type { ImageMetadata } from 'astro';
 
 const posts = defineCollection({
   type: 'content',
