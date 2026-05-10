@@ -1,13 +1,13 @@
 ---
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
 import { getCollection } from 'astro:content';
+import { readingTime } from '../../utils/index';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('posts', p => !p.data.draft))
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
   return posts.map((post, index) => {
-    // Hitung skor kesamaan tag untuk setiap post lain
     const relatedPosts = posts
       .filter(p => p.slug !== post.slug)
       .map(p => ({
@@ -23,7 +23,7 @@ export async function getStaticPaths() {
         description: p.data.description,
         date:        p.data.date,
         tags:        p.data.tags,
-        body:        p.body,
+        readingTime: readingTime(p.body),
         cover:       p.data.cover,
       }));
 

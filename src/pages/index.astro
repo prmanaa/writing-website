@@ -3,13 +3,13 @@ import BaseLayout   from '../layouts/BaseLayout.astro';
 import ArticleCard  from '../components/ArticleCard.astro';
 import Pagination   from '../components/Pagination.astro';
 import { getCollection } from 'astro:content';
+import { readingTime } from '../utils/index';
 
 const POSTS_PER_PAGE = 10;
 
 const allPosts = (await getCollection('posts', p => !p.data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const featured = allPosts.find(p => p.data.featured);
 const currentPage = 1;
 const totalPages  = Math.ceil(allPosts.length / POSTS_PER_PAGE);
 const posts = allPosts.slice(0, POSTS_PER_PAGE);
@@ -17,7 +17,6 @@ const posts = allPosts.slice(0, POSTS_PER_PAGE);
 
 <BaseLayout title="Wildan — Blog" description="Blog pribadi Wildan — tulisan tentang teknologi, produktivitas, dan kehidupan.">
 
-  <!-- Hero -->
   <section class="mb-12">
     <h1 class="font-lora text-3xl sm:text-4xl font-semibold text-brand-text-light dark:text-brand-text-dark mb-3">
       Hei, saya Wildan.
@@ -27,15 +26,14 @@ const posts = allPosts.slice(0, POSTS_PER_PAGE);
     </p>
   </section>
 
-  <!-- Articles -->
   <section>
     <div class="flex items-center justify-between mb-6">
       <h2 class="font-lora text-xl font-semibold text-brand-text-light dark:text-brand-text-dark">
         Tulisan Terbaru
       </h2>
-      {allPosts.length > POSTS_PER_PAGE && (
-        <a href="/tags" class="text-sm text-brand-accent-light dark:text-brand-accent-dark hover:underline">
-          Lihat semua →
+      {totalPages > 1 && (
+        <a href="/index/2" class="text-sm text-brand-accent-light dark:text-brand-accent-dark hover:underline">
+          Lihat lebih →
         </a>
       )}
     </div>
@@ -53,7 +51,7 @@ const posts = allPosts.slice(0, POSTS_PER_PAGE);
             date={post.data.date}
             slug={post.slug}
             tags={post.data.tags}
-            body={post.body}
+            readingTime={readingTime(post.body)}
             featured={post.data.featured}
             cover={post.data.cover}
           />

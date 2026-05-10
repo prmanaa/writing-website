@@ -1,6 +1,6 @@
 ---
-import { Image } from 'astro:assets';
 import BaseHead          from '../components/BaseHead.astro';
+import CoverImage        from '../components/CoverImage.astro';
 import Header            from '../components/Header.astro';
 import Footer            from '../components/Footer.astro';
 import TagBadge          from '../components/TagBadge.astro';
@@ -21,7 +21,8 @@ interface RelatedPost {
   description: string;
   date:        Date;
   tags:        string[];
-  body:        string;
+  readingTime: string;
+  cover?:      string;
 }
 
 interface Props {
@@ -47,26 +48,6 @@ const fd  = formatDate(date);
 const rt  = readingTime(body);
 const wc  = wordCount(body);
 const url = Astro.url.toString();
-
-// Dynamic import untuk cover image dari src/assets/images/covers
-let coverImage: any = null;
-if (cover && !cover.startsWith('http')) {
-  try {
-    const coverModules = import.meta.glob<{ default: ImageMetadata }>(
-      '../assets/images/covers/*.{png,jpg,jpeg,gif,webp}',
-      { eager: true }
-    );
-    const coverPath = `../assets/images/covers/${cover}`;
-    for (const [path, module] of Object.entries(coverModules)) {
-      if (path.endsWith(cover)) {
-        coverImage = module.default;
-        break;
-      }
-    }
-  } catch (e) {
-    // Fallback if image not found
-  }
-}
 ---
 
 <!doctype html>
@@ -105,14 +86,12 @@ if (cover && !cover.startsWith('http')) {
       Lewati ke konten utama
     </a>
 
-    <!-- Reading progress bar -->
     <div id="reading-progress" aria-hidden="true"></div>
 
     <Header />
 
     <main id="main-content" class="max-w-article mx-auto px-5 sm:px-0 py-10 sm:py-16">
 
-      <!-- Article header -->
       <header class="mb-10">
         <div class="flex flex-wrap gap-1.5 mb-4 not-prose">
           {tags.map(tag => <TagBadge tag={tag} />)}
@@ -137,30 +116,19 @@ if (cover && !cover.startsWith('http')) {
         </div>
       </header>
 
-      <!-- Cover image -->
       {cover && (
         <div class="mb-10 not-prose">
-          {coverImage ? (
-            <Image
-              src={coverImage}
-              alt={`Cover untuk artikel: ${title}`}
-              class="w-full rounded-xl object-cover aspect-[2/1] border border-brand-border-light dark:border-brand-border-dark"
-            />
-          ) : (
-            <img
-              src={cover}
-              alt={`Cover untuk artikel: ${title}`}
-              class="w-full rounded-xl object-cover aspect-[2/1] border border-brand-border-light dark:border-brand-border-dark"
-              loading="eager"
-            />
-          )}
+          <CoverImage
+            src={cover}
+            alt={`Cover untuk artikel: ${title}`}
+            class="w-full rounded-xl object-cover aspect-[2/1] border border-brand-border-light dark:border-brand-border-dark"
+            loading="eager"
+          />
         </div>
       )}
 
-      <!-- Table of contents -->
       {headings.length >= 2 && <TableOfContents headings={headings} />}
 
-      <!-- Article body -->
       <article
         class="prose dark:prose-invert max-w-none"
         data-pagefind-body
@@ -169,7 +137,6 @@ if (cover && !cover.startsWith('http')) {
         <slot />
       </article>
 
-      <!-- Share -->
       <div class="mt-10 pt-6 border-t border-brand-border-light dark:border-brand-border-dark not-prose flex items-center gap-3">
         <span class="text-sm text-brand-text-light/50 dark:text-brand-text-dark/50">Bagikan:</span>
         <button
@@ -185,7 +152,6 @@ if (cover && !cover.startsWith('http')) {
         </button>
       </div>
 
-      <!-- Prev / Next navigation -->
       {(prevPost || nextPost) && (
         <nav class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 not-prose" aria-label="Navigasi artikel">
           {prevPost ? (
@@ -208,7 +174,6 @@ if (cover && !cover.startsWith('http')) {
         </nav>
       )}
 
-      <!-- Related posts -->
       <RelatedPosts posts={relatedPosts} />
 
     </main>
@@ -218,7 +183,6 @@ if (cover && !cover.startsWith('http')) {
 </html>
 
 <script>
-  // Reading progress bar
   const progressBar = document.getElementById('reading-progress');
   const article = document.querySelector('article');
 
@@ -226,7 +190,6 @@ if (cover && !cover.startsWith('http')) {
     if (!progressBar || !article) return;
     const articleTop    = article.getBoundingClientRect().top + window.scrollY;
     const articleBottom = articleTop + article.offsetHeight;
-    const windowBottom  = window.scrollY + window.innerHeight;
     const total         = articleBottom - articleTop - window.innerHeight;
     const progress      = Math.min(Math.max((window.scrollY - articleTop + window.innerHeight * 0.1) / (total + window.innerHeight * 0.1) * 100, 0), 100);
     progressBar.style.setProperty('--progress', `${progress}%`);
@@ -249,7 +212,7 @@ if (cover && !cover.startsWith('http')) {
         setTimeout(() => { label.textContent = 'Salin tautan'; }, 2000);
       }
     } catch {
-      // fallback: select text
+      // fallback
     }
   });
 </script>

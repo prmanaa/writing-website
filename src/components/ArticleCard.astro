@@ -1,7 +1,7 @@
 ---
-import { Image } from 'astro:assets';
-import TagBadge from './TagBadge.astro';
-import { formatDate, readingTime } from '../utils/index';
+import CoverImage from './CoverImage.astro';
+import TagBadge   from './TagBadge.astro';
+import { formatDate } from '../utils/index';
 
 interface Props {
   title:       string;
@@ -9,81 +9,52 @@ interface Props {
   date:        Date;
   slug:        string;
   tags:        string[];
-  body:        string;
+  readingTime: string;
   featured?:   boolean;
   cover?:      string;
 }
 
-const { title, description, date, slug, tags, body, featured, cover } = Astro.props;
-const rt = readingTime(body);
+const { title, description, date, slug, tags, readingTime, featured, cover } = Astro.props;
 const fd = formatDate(date);
-
-// Dynamic import untuk cover image dari src/assets/images/covers
-let coverImage: any = null;
-if (cover && !cover.startsWith('http')) {
-  try {
-    const coverModules = import.meta.glob<{ default: ImageMetadata }>(
-      '../assets/images/covers/*.{png,jpg,jpeg,gif,webp}',
-      { eager: true }
-    );
-    for (const [path, module] of Object.entries(coverModules)) {
-      if (path.endsWith(cover)) {
-        coverImage = module.default;
-        break;
-      }
-    }
-  } catch (e) {
-    // Fallback if image not found
-  }
-}
 ---
 
 <article class:list={['card group overflow-hidden !p-0', featured && 'border-brand-accent-light/40 dark:border-brand-accent-dark/40']}>
   {cover && (
     <a href={`/posts/${slug}`} class="block overflow-hidden" tabindex="-1" aria-hidden="true">
-      {coverImage ? (
-        <Image
-          src={coverImage}
-          alt=""
-          class="w-full object-cover aspect-[2/1] transition-transform duration-300 group-hover:scale-105"
-        />
-      ) : (
-        <img
-          src={cover}
-          alt=""
-          class="w-full object-cover aspect-[2/1] transition-transform duration-300 group-hover:scale-105"
-          loading="lazy"
-        />
-      )}
+      <CoverImage
+        src={cover}
+        alt=""
+        class="w-full object-cover aspect-[2/1] transition-transform duration-300 group-hover:scale-105"
+      />
     </a>
   )}
 
   <div class="p-6">
-  {featured && (
-    <span class="inline-block mb-3 text-xs font-medium text-brand-accent-light dark:text-brand-accent-dark uppercase tracking-widest">
-      ★ Unggulan
-    </span>
-  )}
+    {featured && (
+      <span class="inline-block mb-3 text-xs font-medium text-brand-accent-light dark:text-brand-accent-dark uppercase tracking-widest">
+        ★ Unggulan
+      </span>
+    )}
 
-  <a href={`/posts/${slug}`} class="block group-hover:no-underline">
-    <h2 class="font-lora text-xl font-semibold text-brand-text-light dark:text-brand-text-dark group-hover:text-brand-accent-light dark:group-hover:text-brand-accent-dark transition-colors leading-snug mb-2">
-      {title}
-    </h2>
-  </a>
+    <a href={`/posts/${slug}`} class="block group-hover:no-underline">
+      <h2 class="font-lora text-xl font-semibold text-brand-text-light dark:text-brand-text-dark group-hover:text-brand-accent-light dark:group-hover:text-brand-accent-dark transition-colors leading-snug mb-2">
+        {title}
+      </h2>
+    </a>
 
-  <p class="text-sm text-brand-text-light/70 dark:text-brand-text-dark/70 leading-relaxed mb-4 line-clamp-2">
-    {description}
-  </p>
+    <p class="text-sm text-brand-text-light/70 dark:text-brand-text-dark/70 leading-relaxed mb-4 line-clamp-2">
+      {description}
+    </p>
 
-  <div class="flex flex-wrap items-center justify-between gap-3">
-    <div class="flex flex-wrap gap-1.5">
-      {tags.map(tag => <TagBadge tag={tag} />)}
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex flex-wrap gap-1.5">
+        {tags.map(tag => <TagBadge tag={tag} />)}
+      </div>
+      <div class="flex items-center gap-3 text-xs text-brand-text-light/50 dark:text-brand-text-dark/50 shrink-0">
+        <time datetime={date.toISOString()}>{fd}</time>
+        <span aria-hidden>·</span>
+        <span>{readingTime}</span>
+      </div>
     </div>
-    <div class="flex items-center gap-3 text-xs text-brand-text-light/50 dark:text-brand-text-dark/50 shrink-0">
-      <time datetime={date.toISOString()}>{fd}</time>
-      <span aria-hidden>·</span>
-      <span>{rt}</span>
-    </div>
-  </div>
   </div>
 </article>

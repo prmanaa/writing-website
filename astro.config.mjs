@@ -27,4 +27,7 @@ export default defineConfig({
       },
     },
   },
+  legacy: {
+    collections: true,
+  },
 });

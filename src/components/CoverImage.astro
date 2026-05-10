@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src?:     string;
+  alt:      string;
+  class?:   string;
+  loading?: 'lazy' | 'eager';
+}
+
+const { src, alt, class: className = '', loading = 'lazy' } = Astro.props;
+
+const coverModules = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/images/covers/*.{png,jpg,jpeg,gif,webp}',
+  { eager: true }
+);
+
+let resolvedImage: ImageMetadata | null = null;
+if (src && !src.startsWith('http')) {
+  for (const [path, mod] of Object.entries(coverModules)) {
+    if (path.endsWith(src)) {
+      resolvedImage = mod.default;
+      break;
+    }
+  }
+}
+---
+
+{src && (
+  resolvedImage ? (
+    <Image src={resolvedImage} alt={alt} class={className} />
+  ) : (
+    <img src={src} alt={alt} class={className} loading={loading} />
+  )
+)}
