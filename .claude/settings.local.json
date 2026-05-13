@@ -11,7 +11,11 @@
       "Bash(git commit *)",
       "Bash(git push *)",
       "Bash(git pull *)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\wildan\\\\wipy\\\\1-Projects\\\\writing-website\" -Force)",
+      "Bash(Select-Object Name)",
+      "Bash(npm list *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\wildan\\\\wipy\\\\1-Projects\\\\writing-website\" -File)"
     ]
   }
 }
