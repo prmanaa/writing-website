@@ -5,6 +5,7 @@ date: 2026-05-13
 tags:
   - uang
 featured: false
+cover: https://media.npr.org/assets/img/2025/05/09/gettyimages-2150540154_wide-43ea54320826f4e94d4d35e69ee6a4a6ac942876.jpg?s=1400&c=85&f=jpeg
 ---
 
 > Menjadi kaya lebih banyak tentang psikologi daripada hal lain
