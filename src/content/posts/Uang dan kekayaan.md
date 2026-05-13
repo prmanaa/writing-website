@@ -5,7 +5,6 @@ date: 2026-05-13
 tags:
   - uang
 featured: false
-cover:
 ---
 
 > Menjadi kaya lebih banyak tentang psikologi daripada hal lain
